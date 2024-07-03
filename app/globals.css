@@ -226,6 +226,9 @@
   .home-heading {
     @apply h1-semibold max-w-[500px] flex-wrap text-center text-white shadow-sm;
   }
+  .home-subheading {
+    @apply  max-w-[500px] flex-wrap text-center text-white shadow-sm;
+  }
 
   /* Credits Page */
   .credits-list {
