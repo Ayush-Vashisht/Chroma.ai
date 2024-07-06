@@ -7,6 +7,7 @@ import User from "../database/models/user.model";
 import { revalidatePath } from "next/cache";
 import Image from "../database/models/image.model";
 import { redirect } from "next/navigation";
+import { v2 as cloudinary } from "cloudinary";
 
 export async function addImage({ image, userId, path }: AddImageParams) {
   try {
@@ -80,6 +81,41 @@ export async function getImage(imageId: string) {
       throw new Error("Image not found");
     }
     return JSON.parse(JSON.stringify(image));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function getAllImages({
+  searchQuery = "",
+}: {
+  searchQuery?: string;
+}) {
+  try {
+    await connectToDatabase();
+    let expression = "folder=chroma";
+    if (searchQuery) {
+      expression += `AND ${searchQuery}`;
+    }
+    // const {resources} = await cloudinary.v2.search(expression).execute();
+    const { resources } = await cloudinary.search
+      .expression(expression)
+      .execute();
+
+    const resourceIds = resources.map((resource: any) => resource.public_id);
+    let query = {};
+    if (searchQuery) {
+      query = {
+        publicId: {
+          $in: resourceIds,
+        },
+      };
+    }
+    const images = await populateUser(Image.find(query)).sort({
+      updatedAt: -1,
+    });
+
+    return JSON.parse(JSON.stringify(images));
   } catch (error) {
     handleError(error);
   }
