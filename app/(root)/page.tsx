@@ -1,9 +1,17 @@
 import Collection from "@/components/shared/Collection";
+import { SearchParamProps } from "@/types";
+
 import { navLinks } from "@/constants";
+import { getAllImages } from "@/lib/actions/image.action";
 import Image from "next/image";
 import Link from "next/link";
 
- const Home = async () => {
+const Home = async ({ searchParams }: SearchParamProps) => {
+  const page = Number(searchParams?.page) || 1;
+  const searchQuery = (searchParams?.query as string) || "";
+
+  const images = await getAllImages({ page, searchQuery });
+
   return (
     <>
       <section className="home">
@@ -11,7 +19,9 @@ import Link from "next/link";
           Imaginify Your World
           <br />
         </h1>
-        <h2 className="home-subheading">Revolutionize Visual Creativity with Chroma</h2>
+        <h2 className="home-subheading">
+          Revolutionize Visual Creativity with Chroma
+        </h2>
         <ul className="flex-center w-full gap-20">
           {navLinks.slice(1, 5).map((link) => (
             <Link
@@ -28,7 +38,14 @@ import Link from "next/link";
         </ul>
       </section>
 
-      
+      <section className="sm:mt-12">
+        <Collection
+          hasSearch={true}
+          images={images?.data}
+          totalPages={images?.totalPage}
+          page={page}
+        />
+      </section>
     </>
   );
 };
