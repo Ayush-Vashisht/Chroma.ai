@@ -28,13 +28,13 @@ import { useEffect, useState, useTransition } from "react"
 import { AspectRatioKey, debounce, deepMergeObjects } from "@/lib/utils"
 import MediaUploader from "./MediaUploader"
 import TransformedImage from "./TransformedImage"
-// import { updateCredits } from "@/lib/actions/user.actions"
+import { updateCredits } from "@/lib/actions/user.actions"
 import { getCldImageUrl } from "next-cloudinary"
-// import { addImage, updateImage } from "@/lib/actions/image.actions"
 import { useRouter } from "next/navigation"
 import { TransformationFormProps, Transformations } from "@/types"
 import CustomField from "./CustomField"
-// import { InsufficientCreditsModal } from "./InsufficientCreditsModal"
+import { addImage, updateImage } from "@/lib/actions/image.action"
+import { InsufficientCreditsModal } from "./InsufficientCreditModal"
 
 export const formSchema = z.object({
   title: z.string(),
@@ -54,7 +54,7 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
-  const initialValues = data && action === 'update' ? {
+  const initialValues = data && action === 'Update' ? {
     title: data?.title,
     aspectRatio: data?.aspectRatio,
     color: data?.color,
@@ -174,7 +174,7 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
     setNewTransformation(null)
 
     startTransition(async () => {
-      // await updateCredits(userId, creditFee)
+      await updateCredits(userId, creditFee)
     })
   }
 
@@ -187,7 +187,7 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* {creditBalance < Math.abs(creditFee) && <InsufficientCreditsModal />} */}
+        {creditBalance < Math.abs(creditFee) && <InsufficientCreditsModal />}
         <CustomField 
           control={form.control}
           name="title"
