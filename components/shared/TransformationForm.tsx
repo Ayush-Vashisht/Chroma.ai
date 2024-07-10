@@ -92,22 +92,22 @@ const TransformationForm = ({
       const transformationUrl = getCldImageUrl({
         width: image?.width,
         height: image?.height,
-        src: image?.publicId,
+        src: image!.publicId,
         ...transformationConfig,
       });
 
       const imageData = {
         title: values.title,
-        publicId: image?.publicId,
+        publicId: image?.publicId ?? "",
         transformationType: type,
-        width: image?.width,
-        height: image?.height,
-        config: transformationConfig,
-        secureURL: image?.secureURL,
+        width: image?.width ?? 0,
+        height: image?.height ?? 0,
+        config: transformationConfig ?? null,
+        secureURL: image?.secureURL ?? "",
         transformationURL: transformationUrl,
-        aspectRatio: values.aspectRatio,
-        prompt: values.prompt,
-        color: values.color,
+        aspectRatio: values.aspectRatio ?? "",
+        prompt: values.prompt ?? "",
+        color: values.color ?? "",
       };
 
       if (action === "Add") {
@@ -130,6 +130,9 @@ const TransformationForm = ({
 
       if (action === "Update") {
         try {
+          if (!data) {
+            throw new Error("Data is null");
+          }
           const updatedImage = await updateImage({
             image: {
               ...imageData,
