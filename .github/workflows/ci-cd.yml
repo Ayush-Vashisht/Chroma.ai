@@ -1,0 +1,47 @@
+name: Linting and formatting
+on:
+  push:
+  pull_request:
+    branches:
+      - '**'
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Fetch all history for all branches and tags
+          fetch-depth: 0
+
+      # install nodejs
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.x'
+
+      # install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # build docker image for ci cd pipeline
+      - name: Build Docker Image
+        run: docker build -t chroma .
+
+  Continuous-Integration:
+
+    name: Performs linting, formatting on the application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the Repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run linting check
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format
