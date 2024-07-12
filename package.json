@@ -6,11 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint:check": "eslint --max-warnings 0 --config .eslintrc .",
-    "lint:fix": "eslint --max-warnings 0 --config .eslintrc . --fix",
-    "format:fix": "prettier --write \"**/*.{ts,tsx,json}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,json}\""
+    "lint": "next lint"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.30.1",
